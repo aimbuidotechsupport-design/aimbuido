@@ -19,6 +19,7 @@
     --mist-dim:#454b5e;
     --line:rgba(255,255,255,0.08);
     --ember:#ff3352;
+    --good:#3ddc84;
     --font-display:'Unbounded', sans-serif;
     --font-body:'Manrope', sans-serif;
     --pad:clamp(24px,6vw,64px);
@@ -78,6 +79,12 @@
     margin-top:16px;
   }
   .head p{margin-top:20px; color:var(--mist); font-size:16.5px; max-width:480px;}
+
+  .head h2.fit-2line{font-size:clamp(24px,3.2vw,44px);}
+  .services .head{max-width:900px;}
+  @media (max-width:480px){
+    .head h2.fit-2line{font-size:clamp(20px,6.8vw,28px);}
+  }
 
   .rule{border-top:1px solid var(--line);}
 
@@ -183,7 +190,14 @@
     text-transform:uppercase;
     max-width:1000px;
   }
-  .hero h1 .accent{color:var(--royal-bright);}
+  .hero h1 .accent{
+    color:var(--royal-bright);
+    animation:accentGlow 2.6s ease-in-out infinite;
+  }
+  @keyframes accentGlow{
+    0%,100%{text-shadow:0 0 16px rgba(124,147,255,0.55), 0 0 40px rgba(51,85,255,0.3);}
+    50%{text-shadow:0 0 28px rgba(124,147,255,0.9), 0 0 64px rgba(51,85,255,0.55);}
+  }
   .hero-sub{margin-top:32px; font-size:clamp(15px,1.6vw,18px); color:var(--mist); max-width:480px; line-height:1.65;}
   .hero-actions{margin-top:48px; display:flex; align-items:center; gap:36px; flex-wrap:wrap;}
   .hero-actions .link-arrow{color:var(--mist);}
@@ -197,6 +211,107 @@
   .hero-scroll-line{width:52px; height:1px; background:linear-gradient(90deg, var(--mist-dim), transparent); animation:scrollpulse 2.4s ease-in-out infinite;}
   @keyframes scrollpulse{0%,100%{opacity:0.3;} 50%{opacity:1;}}
 
+  /* ---------- live automation demo ---------- */
+
+  .live-demo{padding:60px 0 100px;}
+  .demo-panel{
+    position:relative;
+    margin-top:20px;
+    height:440px;
+    border-radius:28px;
+    border:1px solid var(--line);
+    background:radial-gradient(ellipse at 30% 20%, rgba(51,85,255,0.10), transparent 60%), var(--void);
+    overflow:hidden;
+  }
+  .demo-bg{position:absolute; inset:0; z-index:0;}
+  .demo-bg canvas{width:100%; height:100%; display:block;}
+
+  .demo-badge{
+    position:absolute; z-index:3;
+    display:flex; align-items:center; gap:8px;
+    padding:8px 14px;
+    border-radius:100px;
+    border:1px solid var(--line);
+    background:rgba(4,5,8,0.6);
+    backdrop-filter:blur(6px);
+    font-family:var(--font-body); font-size:11.5px; font-weight:700;
+    letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--mist);
+  }
+  .demo-badge b{color:var(--white); font-weight:700;}
+  .demo-badge-tl{top:22px; left:22px;}
+  .demo-badge-tr{top:22px; right:22px;}
+  .demo-dot{width:7px; height:7px; border-radius:50%; background:var(--royal-bright); box-shadow:0 0 10px var(--royal-bright); animation:demoDotPulse 1.6s ease-in-out infinite;}
+  @keyframes demoDotPulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+
+  .demo-rocket{
+    position:absolute; z-index:4;
+    font-size:22px;
+    left:20px; top:20px;
+    transition:left 3.4s ease-in-out, top 3.4s ease-in-out;
+    filter:drop-shadow(0 0 10px rgba(124,147,255,0.6));
+  }
+  .demo-rocket.attacking{
+    transition:left 0.85s cubic-bezier(.3,.6,.15,1), top 0.85s cubic-bezier(.3,.6,.15,1);
+    filter:drop-shadow(0 0 14px rgba(255,51,82,0.7));
+  }
+
+  .demo-burst{
+    position:absolute; z-index:4;
+    width:16px; height:16px;
+    margin-left:-8px; margin-top:-8px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,0.95), rgba(255,51,82,0.65) 45%, transparent 72%);
+    opacity:0;
+    transform:scale(0.3);
+    transition:opacity 0.4s ease, transform 0.4s ease;
+    pointer-events:none;
+  }
+  .demo-burst.go{opacity:1; transform:scale(3.4);}
+
+  .demo-chips{position:absolute; inset:0; z-index:2;}
+  .demo-chip{
+    position:absolute;
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 16px;
+    border-radius:10px;
+    border:1px solid rgba(255,51,82,0.5);
+    background:rgba(255,51,82,0.08);
+    color:var(--white);
+    font-family:var(--font-body); font-size:14px; font-weight:600;
+    white-space:nowrap;
+    opacity:0; transform:translateY(8px) scale(0.95);
+    transition:opacity 0.4s ease, transform 0.4s ease, border-color 0.4s ease, background 0.4s ease, color 0.4s ease;
+    box-shadow:0 0 22px rgba(255,51,82,0.18);
+  }
+  .demo-chip.show{opacity:1; transform:translateY(0) scale(1);}
+  .demo-chip.shake{animation:demoHitShake 0.26s ease;}
+  @keyframes demoHitShake{
+    0%{transform:translateX(0);}
+    20%{transform:translateX(-5px) rotate(-2deg);}
+    40%{transform:translateX(5px) rotate(2deg);}
+    60%{transform:translateX(-4px);}
+    80%{transform:translateX(3px);}
+    100%{transform:translateX(0);}
+  }
+  .demo-chip .demo-chip-icon{color:var(--ember); font-weight:800;}
+  .demo-chip.fixed{
+    border-color:rgba(61,220,132,0.55);
+    background:rgba(61,220,132,0.08);
+    box-shadow:0 0 22px rgba(61,220,132,0.22);
+  }
+  .demo-chip.fixed .demo-chip-icon{color:var(--good);}
+
+  @media (max-width:760px){
+    .demo-panel{height:360px;}
+    .demo-chip{font-size:12.5px; padding:8px 12px;}
+    .demo-rocket{font-size:18px;}
+  }
+  @media (max-width:480px){
+    .demo-panel{height:320px; border-radius:20px;}
+    .demo-badge{font-size:10px; padding:6px 10px;}
+  }
+
   /* ---------- statement ---------- */
 
   .statement{padding:120px 0; text-align:center;}
@@ -208,36 +323,108 @@
     max-width:820px;
     margin:0 auto;
   }
-  .statement h2 .dim{color:var(--mist-dim);}
+  .statement h2 .dim{color:var(--mist-dim); transition:color 0.5s ease;}
+  .statement h2{cursor:pointer; transition:text-shadow 0.5s ease, transform 0.5s ease;}
+  .statement h2:hover, .statement h2.glow-active{
+    text-shadow:0 0 24px rgba(124,147,255,0.6), 0 0 70px rgba(51,85,255,0.4);
+    transform:scale(1.015);
+  }
+  .statement h2:hover .dim, .statement h2.glow-active .dim{color:var(--royal-bright);}
 
   /* ---------- how it works ---------- */
 
   .process{padding:60px 0 160px;}
-  .process-body{display:grid; grid-template-columns:300px 1fr; gap:80px;}
-  .process-sticky{position:sticky; top:160px; align-self:start; height:fit-content;}
-  .process-sticky .stage-num{font-family:var(--font-display); font-size:56px; font-weight:500; color:var(--royal-bright); line-height:1;}
-  .process-sticky .stage-title{font-family:var(--font-display); font-size:22px; font-weight:500; margin-top:18px; min-height:56px;}
+  .process-body{display:grid; grid-template-columns:420px 1fr; gap:70px; align-items:center;}
+  .process-sticky{}
 
-  .process-track{position:relative; padding-left:0;}
-  .p-step{
-    padding:44px 0;
-    border-top:1px solid var(--line);
-    opacity:0.3;
-    transition:opacity 0.5s ease;
-    display:grid;
-    grid-template-columns:60px 1fr;
-    gap:24px;
+  /* ---------- automation orbit diagram ---------- */
+  .orbit-wrap{max-width:380px; margin:0 auto;}
+  .orbit-svg{width:100%; height:auto; display:block; overflow:visible;}
+  .orbit-ring{fill:none; stroke:var(--line); transform-origin:200px 200px;}
+  .orbit-ring-outer{stroke-dasharray:5 9; animation:orbitSpin 46s linear infinite, ringFlicker 4.5s ease-in-out infinite;}
+  .orbit-ring-mid{stroke:rgba(124,147,255,0.28); stroke-dasharray:1.5 7; animation:orbitSpinRev 32s linear infinite;}
+  .orbit-ring-inner{stroke:rgba(124,147,255,0.16);}
+  @keyframes orbitSpin{to{transform:rotate(360deg);}}
+  @keyframes orbitSpinRev{to{transform:rotate(-360deg);}}
+  @keyframes ringFlicker{
+    0%,100%{opacity:1;}
+    47%{opacity:1;}
+    49%{opacity:0.55;}
+    51%{opacity:1;}
+    74%{opacity:0.75;}
+    76%{opacity:1;}
   }
-  .p-step:last-child{border-bottom:1px solid var(--line);}
-  .p-step.active{opacity:1;}
-  .p-step .tag{font-family:var(--font-body); font-size:12px; font-weight:700; color:var(--mist-dim); letter-spacing:0.06em;}
-  .p-step.active .tag{color:var(--ember);}
-  .p-step h4{font-family:var(--font-display); font-weight:500; font-size:19px; margin-bottom:8px;}
-  .p-step p{color:var(--mist); font-size:14.5px; max-width:420px;}
+
+  .orbit-hub-circle{fill:rgba(51,85,255,0.08); stroke:var(--royal-bright); stroke-width:1.5; filter:drop-shadow(0 0 10px rgba(124,147,255,0.5)); animation:electricFlicker 3.4s infinite;}
+  .orbit-hub-icon{stroke:var(--royal-bright); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; animation:electricFlicker 3.4s infinite;}
+  @keyframes electricFlicker{
+    0%,18%,22%,58%,62%,100%{opacity:1; filter:drop-shadow(0 0 10px rgba(124,147,255,0.5));}
+    20%{opacity:0.65; filter:drop-shadow(0 0 18px rgba(124,147,255,0.9));}
+    60%{opacity:0.8; filter:drop-shadow(0 0 4px rgba(124,147,255,0.3));}
+  }
+
+  .orbit-spoke{
+    stroke:var(--royal-dim); stroke-width:1.4;
+    stroke-dasharray:3 4;
+    transition:stroke 0.5s ease, stroke-width 0.5s ease, filter 0.5s ease;
+    animation:electricArc 0.7s linear infinite;
+  }
+  @keyframes electricArc{to{stroke-dashoffset:-14;}}
+  .orbit-spoke.active{stroke:var(--ember); stroke-width:2.2; filter:drop-shadow(0 0 8px rgba(255,51,82,0.8));}
+
+  .orbit-node-circle{fill:var(--void); stroke:var(--royal-dim); stroke-width:1.6; transition:stroke 0.5s ease, fill 0.5s ease, filter 0.5s ease;}
+  .orbit-node-icon{stroke:var(--mist); fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.5s ease;}
+  .orbit-node.active .orbit-node-circle{fill:rgba(255,51,82,0.12); stroke:var(--ember); filter:drop-shadow(0 0 12px rgba(255,51,82,0.65));}
+  .orbit-node.active .orbit-node-icon{stroke:#fff;}
+
+  .orbit-node{cursor:pointer;}
+  .orbit-node:hover .orbit-node-circle{stroke:var(--royal-bright); filter:drop-shadow(0 0 10px rgba(124,147,255,0.5));}
+  .orbit-node:hover .orbit-node-icon{stroke:var(--royal-bright);}
+  .orbit-node.active:hover .orbit-node-circle{stroke:var(--ember); filter:drop-shadow(0 0 12px rgba(255,51,82,0.65));}
+  .orbit-node.active:hover .orbit-node-icon{stroke:#fff;}
+
+  @media (max-width:480px){
+    .orbit-wrap{max-width:300px;}
+  }
+
+  /* ---------- hover reveal panel ---------- */
+  .process-reveal{position:relative; min-height:260px; display:flex; align-items:center;}
+  .reveal-empty{
+    color:#a6afca;
+    font-size:16px;
+    letter-spacing:0.01em;
+    transition:opacity 0.4s ease;
+    animation:hintGlow 3s ease-in-out infinite;
+  }
+  @keyframes hintGlow{
+    0%,100%{text-shadow:0 0 0 rgba(124,147,255,0);}
+    50%{text-shadow:0 0 16px rgba(124,147,255,0.5);}
+  }
+  .reveal-empty.hide{opacity:0;}
+
+  .reveal-content{
+    position:absolute; left:0; right:0;
+    opacity:0; filter:blur(6px);
+    transform:translateY(10px) scale(0.98);
+    padding:30px 34px;
+    border-radius:18px;
+    border:1px solid transparent;
+    transition:opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+  }
+  .reveal-content.show{
+    opacity:1; filter:blur(0);
+    transform:translateY(0) scale(1);
+    border-color:rgba(124,147,255,0.4);
+    box-shadow:0 0 36px rgba(51,85,255,0.32), inset 0 0 26px rgba(51,85,255,0.07);
+    background:rgba(51,85,255,0.045);
+  }
+  .reveal-num{font-family:var(--font-display); font-size:40px; font-weight:500; color:var(--royal-bright); line-height:1; margin-bottom:14px; text-shadow:0 0 18px rgba(124,147,255,0.55);}
+  .reveal-content h3{font-family:var(--font-display); font-weight:500; font-size:26px; margin-bottom:12px; color:var(--white);}
+  .reveal-content p{color:#c9cfe3; font-size:16px; line-height:1.6; max-width:460px;}
 
   @media (max-width:860px){
     .process-body{grid-template-columns:1fr; gap:20px;}
-    .process-sticky{position:relative; top:0; margin-bottom:20px;}
+    .process-reveal{min-height:220px;}
   }
 
   /* ---------- services / how ---------- */
@@ -251,34 +438,37 @@
     padding:30px 0;
     border-top:1px solid var(--line);
     transition:background 0.3s ease;
-    cursor:default;
+    cursor:pointer;
   }
   .services .svc-row:last-child{border-bottom:1px solid var(--line);}
   .svc-row:hover{background:rgba(255,255,255,0.02);}
-  .svc-row .idx{font-family:var(--font-body); font-size:13px; color:var(--mist-dim); font-weight:700;}
-  .svc-row h3{font-family:var(--font-display); font-weight:500; font-size:clamp(18px,2.4vw,24px);}
-  .svc-row p{color:var(--mist); font-size:14.5px; max-width:440px;}
+  .svc-row .idx{font-family:var(--font-body); font-size:13px; color:var(--mist-dim); font-weight:700; transition:color 0.4s ease, text-shadow 0.4s ease;}
+  .svc-row h3{font-family:var(--font-display); font-weight:500; font-size:clamp(18px,2.4vw,24px); margin-bottom:10px; transition:color 0.4s ease, text-shadow 0.4s ease;}
+  .svc-row p{
+    color:#c3c9db; font-size:16px; line-height:1.65; max-width:440px;
+    padding:14px 18px; margin:-14px -18px;
+    border-radius:14px; border:1px solid transparent;
+    transition:color 0.5s ease, text-shadow 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+  }
+  .svc-row:hover .idx, .svc-row.row-active .idx{
+    color:var(--royal-bright);
+    text-shadow:0 0 12px rgba(124,147,255,0.5);
+  }
+  .svc-row:hover h3, .svc-row.row-active h3{
+    color:var(--white);
+    text-shadow:0 0 16px rgba(124,147,255,0.4);
+  }
+  .svc-row:hover p, .svc-row.row-active p{
+    color:#ffffff;
+    text-shadow:0 0 18px rgba(124,147,255,0.5), 0 0 46px rgba(51,85,255,0.3);
+    border-color:rgba(124,147,255,0.45);
+    box-shadow:0 0 26px rgba(51,85,255,0.35), inset 0 0 22px rgba(51,85,255,0.08);
+    background:rgba(51,85,255,0.06);
+  }
   @media (max-width:700px){
-    .svc-row{grid-template-columns:40px 1fr; row-gap:10px;}
-    .svc-row p{grid-column:2 / 3;}
+    .svc-row{grid-template-columns:40px 1fr; row-gap:12px;}
+    .svc-row p{grid-column:2 / 3; font-size:15px; line-height:1.6;}
   }
-
-  /* ---------- transform ---------- */
-
-  .transform{padding:60px 0 160px;}
-  .transform-grid{display:grid; grid-template-columns:1fr 1fr; gap:80px;}
-  .transform-col .label{margin-bottom:26px;}
-  .before-list{display:flex; flex-direction:column; gap:16px;}
-  .before-list li{color:var(--mist); font-size:15.5px; list-style:none; padding-bottom:16px; border-bottom:1px dashed var(--line);}
-  .after-list{display:flex; flex-direction:column; gap:0;}
-  .after-list .clean-node{
-    display:flex; align-items:center; gap:14px;
-    padding:16px 0; font-size:15.5px; font-weight:600;
-    border-bottom:1px solid var(--line);
-  }
-  .after-list .clean-node:first-child{border-top:1px solid var(--line);}
-  .after-list .dot{width:7px; height:7px; border-radius:50%; background:var(--royal-bright); box-shadow:0 0 10px var(--royal-bright); flex-shrink:0;}
-  @media (max-width:760px){.transform-grid{grid-template-columns:1fr; gap:50px;}}
 
   /* ---------- portfolio showcase ---------- */
 
@@ -291,14 +481,49 @@
     gap:50px;
     align-items:center;
   }
+  .folio-item{cursor:pointer;}
   .portfolio .folio-item:last-child{border-bottom:1px solid var(--line);}
   .folio-item:nth-child(even){direction:rtl;}
   .folio-item:nth-child(even) > *{direction:ltr;}
   .folio-name{font-family:var(--font-display); font-weight:500; font-size:clamp(26px,4vw,42px); line-height:1.1;}
   .folio-flow{margin-top:26px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:14px; color:var(--mist); font-weight:600;}
-  .folio-flow .seg{padding:8px 14px; border:1px solid var(--line); border-radius:100px;}
-  .folio-flow .sep{color:var(--mist-dim);}
-  .folio-need{color:var(--mist); font-size:15px; max-width:400px; line-height:1.6;}
+  .folio-flow .seg{padding:8px 14px; border:1px solid var(--line); border-radius:100px; transition:border-color 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;}
+  .folio-flow .sep{color:var(--mist-dim); display:inline-block; transition:color 0.4s ease;}
+  .folio-need{
+    color:var(--mist); font-size:15px; max-width:400px; line-height:1.6;
+    padding:16px 20px; margin:-16px -20px;
+    border-radius:14px; border:1px solid transparent;
+    transition:color 0.5s ease, text-shadow 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+  }
+
+  .folio-item:hover .folio-need, .folio-item.flow-active .folio-need{
+    color:#c9cfe3;
+    text-shadow:0 0 18px rgba(124,147,255,0.5), 0 0 46px rgba(51,85,255,0.3);
+    border-color:rgba(124,147,255,0.45);
+    box-shadow:0 0 26px rgba(51,85,255,0.35), inset 0 0 22px rgba(51,85,255,0.08);
+    background:rgba(51,85,255,0.05);
+  }
+  .folio-item:hover .folio-flow .seg, .folio-item.flow-active .folio-flow .seg{
+    border-color:var(--royal-bright);
+    color:var(--white);
+    box-shadow:0 0 14px rgba(124,147,255,0.35);
+  }
+  .folio-item:hover .folio-flow .seg:nth-child(3), .folio-item.flow-active .folio-flow .seg:nth-child(3){transition-delay:0.12s;}
+  .folio-item:hover .folio-flow .seg:nth-child(5), .folio-item.flow-active .folio-flow .seg:nth-child(5){transition-delay:0.24s;}
+  .folio-item:hover .folio-flow .seg:last-child, .folio-item.flow-active .folio-flow .seg:last-child{
+    border-color:var(--ember);
+    box-shadow:0 0 18px rgba(255,51,82,0.55);
+  }
+  @keyframes flowArrow{
+    0%,100%{transform:translateX(0); opacity:0.6;}
+    50%{transform:translateX(4px); opacity:1;}
+  }
+  .folio-item:hover .folio-flow .sep, .folio-item.flow-active .folio-flow .sep{
+    color:var(--royal-bright);
+    animation:flowArrow 1s ease-in-out infinite;
+  }
+  .folio-item:hover .folio-flow .sep:nth-child(2), .folio-item.flow-active .folio-flow .sep:nth-child(2){animation-delay:0s;}
+  .folio-item:hover .folio-flow .sep:nth-child(4), .folio-item.flow-active .folio-flow .sep:nth-child(4){animation-delay:0.2s;}
   @media (max-width:760px){
     .folio-item{grid-template-columns:1fr; direction:ltr !important;}
     .folio-item > *{direction:ltr;}
@@ -310,7 +535,14 @@
   .about-grid{display:grid; grid-template-columns:0.7fr 1fr 0.9fr; gap:56px; align-items:center;}
   .about-photo{width:100%; aspect-ratio:1/1; object-fit:cover; border:1px solid var(--line); filter:saturate(1.05);}
   .about-text p{font-family:var(--font-display); font-weight:400; font-size:clamp(20px,2.6vw,28px); line-height:1.5;}
-  .about-text .by{margin-top:26px; font-size:14px; color:var(--mist);}
+  .about-text .by{
+    margin-top:26px; font-size:14px; color:var(--mist);
+    animation:byGlow 3s ease-in-out infinite;
+  }
+  @keyframes byGlow{
+    0%,100%{color:var(--mist); text-shadow:0 0 0 rgba(124,147,255,0);}
+    50%{color:#c9cfe3; text-shadow:0 0 18px rgba(124,147,255,0.55);}
+  }
   .about-nodes{display:flex; flex-direction:column;}
   .about-node{display:flex; align-items:center; gap:14px; padding:16px 0; font-size:14.5px; font-weight:600; color:var(--mist-dim); border-bottom:1px solid var(--line); transition:color 0.4s ease;}
   .about-node:first-child{border-top:1px solid var(--line);}
@@ -372,9 +604,25 @@
   <div class="hero-scroll"><span>Scroll</span><div class="hero-scroll-line"></div></div>
 </section>
 
+<section class="live-demo rule" id="live-demo">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="label on">Live automation</div>
+      <h2>Problems get fixed while you sleep.</h2>
+    </div>
+    <div class="demo-panel" id="demo-panel">
+      <div class="demo-bg"><canvas id="demo-canvas"></canvas></div>
+      <div class="demo-badge demo-badge-tl"><span class="demo-dot"></span>CRM Sync <b>Live</b></div>
+      <div class="demo-badge demo-badge-tr">Revenue</div>
+      <div class="demo-rocket" id="demo-rocket">🚀</div>
+      <div class="demo-chips" id="demo-chips"></div>
+    </div>
+  </div>
+</section>
+
 <section class="statement">
   <div class="wrap">
-    <h2 class="reveal" id="statement-1">You bring the business. <span class="dim">I'll handle the GHL setup.</span></h2>
+    <h2 class="reveal" id="statement-1">You bring the business<br><span class="dim">I'll handle the GHL setup</span></h2>
   </div>
 </section>
 
@@ -387,33 +635,70 @@
     </div>
     <div class="process-body">
       <div class="process-sticky">
-        <div class="stage-num" id="stage-num">01</div>
-        <div class="stage-title" id="stage-title">Customer fills out form</div>
+        <div class="orbit-wrap">
+          <svg class="orbit-svg" viewBox="0 0 400 400">
+            <g class="orbit-spokes">
+              <line class="orbit-spoke" data-index="0" x1="200" y1="200" x2="200" y2="50"/>
+              <line class="orbit-spoke" data-index="1" x1="200" y1="200" x2="330" y2="125"/>
+              <line class="orbit-spoke" data-index="2" x1="200" y1="200" x2="330" y2="275"/>
+              <line class="orbit-spoke" data-index="3" x1="200" y1="200" x2="200" y2="350"/>
+              <line class="orbit-spoke" data-index="4" x1="200" y1="200" x2="70" y2="275"/>
+              <line class="orbit-spoke" data-index="5" x1="200" y1="200" x2="70" y2="125"/>
+            </g>
+            <circle class="orbit-ring orbit-ring-outer" cx="200" cy="200" r="190"/>
+            <circle class="orbit-ring orbit-ring-mid" cx="200" cy="200" r="150"/>
+            <circle class="orbit-ring orbit-ring-inner" cx="200" cy="200" r="110"/>
+
+            <circle class="orbit-hub-circle" cx="200" cy="200" r="55"/>
+            <g class="orbit-hub-icon" transform="translate(177,177) scale(1.9167)">
+              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </g>
+
+            <g class="orbit-node" data-index="0">
+              <circle class="orbit-node-circle" cx="200" cy="50" r="30"/>
+              <g class="orbit-node-icon" transform="translate(189,39) scale(0.9167)">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8"/>
+              </g>
+            </g>
+            <g class="orbit-node" data-index="1">
+              <circle class="orbit-node-circle" cx="330" cy="125" r="30"/>
+              <g class="orbit-node-icon" transform="translate(319,114) scale(0.9167)">
+                <path d="M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+              </g>
+            </g>
+            <g class="orbit-node" data-index="2">
+              <circle class="orbit-node-circle" cx="330" cy="275" r="30"/>
+              <g class="orbit-node-icon" transform="translate(319,264) scale(0.9167)">
+                <path d="M12 8c4.42 0 8-1.79 8-4s-3.58-4-8-4-8 1.79-8 4 3.58 4 8 4z M4 6v6c0 2.21 3.58 4 8 4s8-1.79 8-4V6 M4 12v6c0 2.21 3.58 4 8 4s8-1.79 8-4v-6"/>
+              </g>
+            </g>
+            <g class="orbit-node" data-index="3">
+              <circle class="orbit-node-circle" cx="200" cy="350" r="30"/>
+              <g class="orbit-node-icon" transform="translate(189,339) scale(0.9167)">
+                <path d="M6 3v12 M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 9a9 9 0 0 1-9 9"/>
+              </g>
+            </g>
+            <g class="orbit-node" data-index="4">
+              <circle class="orbit-node-circle" cx="70" cy="275" r="30"/>
+              <g class="orbit-node-icon" transform="translate(59,264) scale(0.9167)">
+                <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+              </g>
+            </g>
+            <g class="orbit-node" data-index="5">
+              <circle class="orbit-node-circle" cx="70" cy="125" r="30"/>
+              <g class="orbit-node-icon" transform="translate(59,114) scale(0.9167)">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 0 1-3.46 0"/>
+              </g>
+            </g>
+          </svg>
+        </div>
       </div>
-      <div class="process-track">
-        <div class="p-step" data-title="Customer fills out form">
-          <div class="tag">01</div>
-          <div><h4>Customer fills out form</h4><p>A visitor lands on a form embedded in your funnel or website and starts filling it in.</p></div>
-        </div>
-        <div class="p-step" data-title="Form captures information">
-          <div class="tag">02</div>
-          <div><h4>Form captures information</h4><p>Every field submitted is captured cleanly, no matter how the visitor got there.</p></div>
-        </div>
-        <div class="p-step" data-title="Custom field stores data">
-          <div class="tag">03</div>
-          <div><h4>Custom field stores data</h4><p>The information lands in the right custom field on the contact record, ready to use.</p></div>
-        </div>
-        <div class="p-step" data-title="Contact enters workflow">
-          <div class="tag">04</div>
-          <div><h4>Contact enters workflow</h4><p>The contact is dropped into the workflow built for exactly this situation.</p></div>
-        </div>
-        <div class="p-step" data-title="Workflow triggers">
-          <div class="tag">05</div>
-          <div><h4>Workflow triggers</h4><p>The workflow runs its steps: tagging, routing, timing, whatever the business needs.</p></div>
-        </div>
-        <div class="p-step" data-title="Notification is sent">
-          <div class="tag">06</div>
-          <div><h4>Notification is sent</h4><p>The right person gets notified automatically. No one has to check a spreadsheet.</p></div>
+      <div class="process-reveal" id="process-reveal">
+        <div class="reveal-empty">Hover a node to explore each step.</div>
+        <div class="reveal-content">
+          <div class="reveal-num" id="reveal-num">01</div>
+          <h3 id="reveal-title">Customer fills out form</h3>
+          <p id="reveal-desc">A visitor lands on a form embedded in your funnel or website and starts filling it in.</p>
         </div>
       </div>
     </div>
@@ -424,7 +709,7 @@
   <div class="wrap">
     <div class="head reveal">
       <div class="label on">What I handle</div>
-      <h2>Sub-accounts to workflows. Everything in between.</h2>
+      <h2 class="fit-2line">Sub-accounts to workflows<br>Everything in between</h2>
     </div>
     <div class="svc-list">
       <div class="svc-row"><div class="idx">01</div><h3>Sub-account setup</h3><p>Creating and organizing your GHL sub-account so nothing is buried three menus deep.</p></div>
@@ -441,38 +726,7 @@
 
 <section class="statement">
   <div class="wrap">
-    <h2 class="reveal" id="statement-2">Form in.<br><span class="dim">Workflow on. Notification out.</span></h2>
-  </div>
-</section>
-
-<section class="transform rule" id="transform">
-  <div class="wrap">
-    <div class="head reveal">
-      <div class="label on">Before you call me</div>
-      <h2>Most GHL accounts look like this.</h2>
-    </div>
-    <div class="transform-grid">
-      <div class="transform-col reveal">
-        <div class="label" style="color:var(--ember)">Before</div>
-        <ul class="before-list">
-          <li>Unorganized forms</li>
-          <li>Missing information</li>
-          <li>Disconnected processes</li>
-          <li>Manual notifications</li>
-          <li>Confusing setup</li>
-        </ul>
-      </div>
-      <div class="transform-col reveal reveal-delay-1">
-        <div class="label" style="color:var(--royal-bright)">After</div>
-        <div class="after-list">
-          <div class="clean-node"><span class="dot"></span>Form</div>
-          <div class="clean-node"><span class="dot"></span>Custom field</div>
-          <div class="clean-node"><span class="dot"></span>Funnel</div>
-          <div class="clean-node"><span class="dot"></span>Workflow</div>
-          <div class="clean-node"><span class="dot"></span>Notification</div>
-        </div>
-      </div>
-    </div>
+    <h2 class="reveal" id="statement-2">Form in.<br><span class="dim">Workflow on.</span><br><span class="dim">Notification out.</span></h2>
   </div>
 </section>
 
@@ -566,8 +820,8 @@
     heroSub: "Funnels, forms, custom fields and workflows, set up so leads never fall through the cracks.",
     heroCtaPrimary: "See what I build",
     heroCtaSecondary: "Let's work together \u2192",
-    statement1: 'You bring the business. <span class="dim">I\'ll handle the GHL setup.</span>',
-    statement2: 'Form in.<br><span class="dim">Workflow on. Notification out.</span>',
+    statement1: 'You bring the business<br><span class="dim">I\'ll handle the GHL setup</span>',
+    statement2: 'Form in.<br><span class="dim">Workflow on.</span><br><span class="dim">Notification out.</span>',
     aboutQuote: '"I\'m AL Imbuido, a GoHighLevel specialist focused on building and connecting the systems businesses use every day."',
     aboutBy: "No architect title. No strategist title. Just the setup, done properly.",
     finalCtaHeadline: "Need help setting up GHL?",
@@ -791,36 +1045,55 @@
   }, {threshold:0.15});
   revealEls.forEach(function(el){ io.observe(el); });
 
-  // ================= process step sync (drives 3D node highlight) =================
-  var track = document.querySelector('.process-track');
-  var steps = document.querySelectorAll('.p-step');
-  var stageTitle = document.getElementById('stage-title');
-  var stageNum = document.getElementById('stage-num');
+  // ================= process orbit hover reveal =================
   var stepToNode = [0,0,1,2,3,4];
+  var stepData = [
+    {title:'Customer fills out form', desc:'A visitor lands on a form embedded in your funnel or website and starts filling it in.'},
+    {title:'Form captures information', desc:'Every field submitted is captured cleanly, no matter how the visitor got there.'},
+    {title:'Custom field stores data', desc:'The information lands in the right custom field on the contact record, ready to use.'},
+    {title:'Contact enters workflow', desc:'The contact is dropped into the workflow built for exactly this situation.'},
+    {title:'Workflow triggers', desc:'The workflow runs its steps: tagging, routing, timing, whatever the business needs.'},
+    {title:'Notification is sent', desc:'The right person gets notified automatically. No one has to check a spreadsheet.'}
+  ];
 
-  function updateProcess(){
-    if(!track) return;
-    var viewportCenter = window.innerHeight * 0.5;
-    var activeIndex = -1;
-    steps.forEach(function(step, i){
-      var r = step.getBoundingClientRect();
-      if(r.top < viewportCenter) activeIndex = i;
-    });
-    if(activeIndex === -1){ window.__setActiveNode(-1); return; }
-    steps.forEach(function(step, i){ step.classList.toggle('active', i === activeIndex); });
-    var title = steps[activeIndex].getAttribute('data-title');
-    if(stageTitle.textContent !== title){
-      stageTitle.style.opacity = 0;
-      setTimeout(function(){
-        stageTitle.textContent = title;
-        stageNum.textContent = String(activeIndex+1).padStart(2,'0');
-        stageTitle.style.opacity = 1;
-      }, 150);
-    }
-    window.__setActiveNode(stepToNode[activeIndex]);
+  var orbitNodes = document.querySelectorAll('.orbit-node');
+  var orbitSpokes = document.querySelectorAll('.orbit-spoke');
+  var revealContent = document.querySelector('.reveal-content');
+  var revealEmpty = document.querySelector('.reveal-empty');
+  var revealNum = document.getElementById('reveal-num');
+  var revealTitle = document.getElementById('reveal-title');
+  var revealDesc = document.getElementById('reveal-desc');
+
+  function setOrbitActive(index){
+    orbitNodes.forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-index') === String(index)); });
+    orbitSpokes.forEach(function(s){ s.classList.toggle('active', s.getAttribute('data-index') === String(index)); });
   }
-  window.addEventListener('scroll', updateProcess);
-  updateProcess();
+
+  function showStep(idx){
+    setOrbitActive(idx);
+    window.__setActiveNode(stepToNode[idx]);
+    var d = stepData[idx];
+    revealNum.textContent = String(idx+1).padStart(2,'0');
+    revealTitle.textContent = d.title;
+    revealDesc.textContent = d.desc;
+    if(revealContent) revealContent.classList.add('show');
+    if(revealEmpty) revealEmpty.classList.add('hide');
+  }
+  function hideStep(){
+    setOrbitActive(-1);
+    window.__setActiveNode(-1);
+    if(revealContent) revealContent.classList.remove('show');
+    if(revealEmpty) revealEmpty.classList.remove('hide');
+  }
+
+  orbitNodes.forEach(function(node){
+    var idx = parseInt(node.getAttribute('data-index'), 10);
+    node.addEventListener('mouseenter', function(){ showStep(idx); });
+    node.addEventListener('mouseleave', hideStep);
+    node.addEventListener('click', function(){
+      if(node.classList.contains('active')) hideStep(); else showStep(idx);
+    });
+  });
 
   // ================= about nodes sequence =================
   var aboutNodes = document.querySelectorAll('#about-nodes .about-node');
@@ -861,6 +1134,213 @@
     }, {threshold:0.4});
     ctaIo.observe(ctaDiagram);
   }
+
+  // ================= statement glow on click =================
+  document.querySelectorAll('.statement h2').forEach(function(h2){
+    h2.addEventListener('click', function(){
+      h2.classList.toggle('glow-active');
+    });
+  });
+
+  // ================= folio workflow glow on click (mobile tap support) =================
+  document.querySelectorAll('.folio-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      item.classList.toggle('flow-active');
+    });
+  });
+
+  // ================= services row glow on click (mobile tap support) =================
+  document.querySelectorAll('.svc-row').forEach(function(row){
+    row.addEventListener('click', function(){
+      row.classList.toggle('row-active');
+    });
+  });
+
+  // ================= live automation demo panel =================
+  (function(){
+    var panel = document.getElementById('demo-panel');
+    if(!panel) return;
+    var chipsEl = document.getElementById('demo-chips');
+    var rocket = document.getElementById('demo-rocket');
+    var canvas = document.getElementById('demo-canvas');
+    var ctx = canvas.getContext('2d');
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var problems = [
+      {text:'Invoice Overdue', fixed:'Payment Received'},
+      {text:'Spreadsheet Chaos', fixed:'Automated'},
+      {text:'Lost Lead', fixed:'Repaired'},
+      {text:'Email Failed', fixed:'AI Completed'},
+      {text:'Unanswered Chat', fixed:'Auto Follow-up'},
+      {text:'Workflow Error', fixed:'CRM Updated'}
+    ];
+
+    var running = false;
+    var chipTimer = null;
+    var rocketTimer = null;
+    var rafId = null;
+    var particles = [];
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function sizeCanvas(){
+      var w = panel.clientWidth, h = panel.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var count = w < 480 ? 16 : (w < 760 ? 22 : 30);
+      particles = [];
+      for(var i=0; i<count; i++){
+        particles.push({
+          x: Math.random()*w, y: Math.random()*h,
+          vx: (Math.random()-0.5)*0.15, vy: (Math.random()-0.5)*0.15,
+          hue: Math.random() > 0.7 ? 'rgba(124,147,255,' : 'rgba(139,147,168,'
+        });
+      }
+    }
+
+    function drawFrame(){
+      var w = panel.clientWidth, h = panel.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      for(var i=0;i<particles.length;i++){
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > w) p.vx *= -1;
+        if(p.y < 0 || p.y > h) p.vy *= -1;
+        for(var j=i+1;j<particles.length;j++){
+          var q = particles[j];
+          var dx = p.x-q.x, dy = p.y-q.y;
+          var dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < 150){
+            ctx.strokeStyle = 'rgba(124,147,255,'+ (0.14*(1-dist/150)) +')';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+            ctx.stroke();
+          }
+        }
+      }
+      for(var k=0;k<particles.length;k++){
+        var pt = particles[k];
+        ctx.fillStyle = pt.hue + '0.85)';
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 2, 0, Math.PI*2);
+        ctx.fill();
+      }
+      if(running) rafId = requestAnimationFrame(drawFrame);
+    }
+
+    function spawnBurst(x, y){
+      if(!chipsEl) return;
+      var burst = document.createElement('div');
+      burst.className = 'demo-burst';
+      burst.style.left = x + 'px';
+      burst.style.top = y + 'px';
+      chipsEl.appendChild(burst);
+      requestAnimationFrame(function(){ burst.classList.add('go'); });
+      setTimeout(function(){ if(burst.parentNode) burst.parentNode.removeChild(burst); }, 500);
+    }
+
+    var queue = [];
+    var rocketBusy = false;
+
+    function spawnChip(){
+      if(!chipsEl || chipsEl.children.length >= 4) return;
+      var p = problems[Math.floor(Math.random()*problems.length)];
+      var chip = document.createElement('div');
+      chip.className = 'demo-chip';
+      chip.innerHTML = '<span class="demo-chip-icon">!</span>' + p.text;
+      chip.dataset.fixedText = p.fixed;
+      var w = chipsEl.clientWidth, h = chipsEl.clientHeight;
+      var top = 50 + Math.random() * Math.max(h - 110, 40);
+      var left = 30 + Math.random() * Math.max(w - 230, 40);
+      chip.style.top = top + 'px';
+      chip.style.left = left + 'px';
+      chipsEl.appendChild(chip);
+      requestAnimationFrame(function(){ chip.classList.add('show'); });
+      queue.push(chip);
+      processQueue();
+    }
+
+    function processQueue(){
+      if(rocketBusy || !queue.length || !rocket) return;
+      var chip = queue.shift();
+      if(!chip.parentNode){ processQueue(); return; }
+      rocketBusy = true;
+      rocket.classList.add('attacking');
+
+      var chipRect = chip.getBoundingClientRect();
+      var panelRect = panel.getBoundingClientRect();
+      var targetX = (chipRect.left - panelRect.left) + chipRect.width/2 - 11;
+      var targetY = (chipRect.top - panelRect.top) + chipRect.height/2 - 11;
+      rocket.style.left = Math.max(targetX,6) + 'px';
+      rocket.style.top = Math.max(targetY,6) + 'px';
+
+      setTimeout(function(){
+        if(chip.parentNode){
+          var cx = parseFloat(chip.style.left) + chip.offsetWidth/2;
+          var cy = parseFloat(chip.style.top) + chip.offsetHeight/2;
+          spawnBurst(cx, cy);
+          chip.classList.add('shake');
+          setTimeout(function(){
+            chip.classList.remove('shake');
+            chip.classList.add('fixed');
+            chip.innerHTML = '<span class="demo-chip-icon">&#10003;</span>' + chip.dataset.fixedText;
+          }, 260);
+          setTimeout(function(){
+            if(chip.parentNode){
+              chip.classList.remove('show');
+              setTimeout(function(){ if(chip.parentNode) chip.parentNode.removeChild(chip); }, 500);
+            }
+          }, 1900);
+        }
+        rocketBusy = false;
+        rocket.classList.remove('attacking');
+        processQueue();
+      }, 850);
+    }
+
+    function idleWander(){
+      if(rocketBusy || queue.length || !rocket) return;
+      var w = panel.clientWidth, h = panel.clientHeight;
+      var x = 24 + Math.random() * Math.max(w - 60, 40);
+      var y = 24 + Math.random() * Math.max(h - 60, 40);
+      rocket.style.left = x + 'px';
+      rocket.style.top = y + 'px';
+    }
+
+    function start(){
+      if(running) return;
+      running = true;
+      sizeCanvas();
+      if(!reduceMotion){
+        rafId = requestAnimationFrame(drawFrame);
+      } else {
+        drawFrame();
+        running = false;
+      }
+      idleWander();
+      rocketTimer = setInterval(idleWander, 3600);
+      spawnChip();
+      chipTimer = setInterval(spawnChip, 1300);
+    }
+    function stop(){
+      running = false;
+      if(rafId) cancelAnimationFrame(rafId);
+      if(chipTimer) clearInterval(chipTimer);
+      if(rocketTimer) clearInterval(rocketTimer);
+    }
+
+    window.addEventListener('resize', function(){ if(running) sizeCanvas(); });
+
+    var demoIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting) start(); else stop();
+      });
+    }, {threshold:0.15});
+    demoIo.observe(panel);
+  })();
 
   // ================= magnetic buttons =================
   document.querySelectorAll('.btn-solid, .nav-cta').forEach(function(btn){
