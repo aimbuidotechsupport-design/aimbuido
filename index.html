@@ -363,98 +363,158 @@
   /* ---------- how it works ---------- */
 
   .process{padding:60px 0 160px;}
-  .process-body{display:grid; grid-template-columns:420px 1fr; gap:70px; align-items:center;}
-  .process-sticky{}
 
-  /* ---------- automation orbit diagram ---------- */
-  .orbit-wrap{max-width:380px; margin:0 auto;}
-  .orbit-svg{width:100%; height:auto; display:block; overflow:visible;}
-  .orbit-ring{fill:none; stroke:var(--line); transform-origin:200px 200px;}
-  .orbit-ring-outer{stroke-dasharray:5 9; animation:orbitSpin 46s linear infinite, ringFlicker 4.5s ease-in-out infinite;}
-  .orbit-ring-mid{stroke:rgba(124,147,255,0.28); stroke-dasharray:1.5 7; animation:orbitSpinRev 32s linear infinite;}
-  .orbit-ring-inner{stroke:rgba(124,147,255,0.16);}
-  @keyframes orbitSpin{to{transform:rotate(360deg);}}
-  @keyframes orbitSpinRev{to{transform:rotate(-360deg);}}
-  @keyframes ringFlicker{
-    0%,100%{opacity:1;}
-    47%{opacity:1;}
-    49%{opacity:0.55;}
-    51%{opacity:1;}
-    74%{opacity:0.75;}
-    76%{opacity:1;}
+  /* ---------- process flow: live pipeline ---------- */
+  .flow-list{position:relative; max-width:640px; margin-top:8px;}
+  .flow-list::before{
+    content:''; position:absolute; left:22px; top:6px; bottom:6px; width:2px;
+    background:linear-gradient(180deg, transparent, rgba(124,147,255,.25) 6%, rgba(124,147,255,.25) 94%, transparent);
+    pointer-events:none;
+  }
+  .flow-list::after{
+    content:''; position:absolute; left:22px; top:0; width:10px; height:32%; margin-left:-4px; border-radius:99px;
+    background:linear-gradient(180deg, transparent, var(--royal-bright), #fff, transparent);
+    box-shadow:0 0 12px var(--royal-bright), 0 0 30px rgba(51,85,255,.75);
+    opacity:0; transform:translateY(-100%); pointer-events:none;
+  }
+  .flow-list.flow-running::after{
+    opacity:1;
+    animation:flowCurrent 5.4s cubic-bezier(.45,0,.55,1) infinite, shockFlicker 0.3s ease-in-out infinite;
+  }
+  @keyframes flowCurrent{
+    0%{transform:translateY(-100%); opacity:0;}
+    6%{opacity:1;}
+    90%{opacity:1;}
+    100%{transform:translateY(340%); opacity:0;}
+  }
+  @keyframes shockFlicker{
+    0%,100%{filter:brightness(1);}
+    25%{filter:brightness(1.7);}
+    50%{filter:brightness(0.65);}
+    75%{filter:brightness(1.4);}
   }
 
-  .orbit-hub-circle{fill:rgba(51,85,255,0.08); stroke:var(--royal-bright); stroke-width:1.5; filter:drop-shadow(0 0 10px rgba(124,147,255,0.5)); animation:electricFlicker 3.4s infinite;}
-  .orbit-hub-icon{stroke:var(--royal-bright); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; animation:electricFlicker 3.4s infinite;}
-  @keyframes electricFlicker{
-    0%,18%,22%,58%,62%,100%{opacity:1; filter:drop-shadow(0 0 10px rgba(124,147,255,0.5));}
-    20%{opacity:0.65; filter:drop-shadow(0 0 18px rgba(124,147,255,0.9));}
-    60%{opacity:0.8; filter:drop-shadow(0 0 4px rgba(124,147,255,0.3));}
+  .flow-step{position:relative; display:flex; gap:26px; padding:26px 0;}
+  .flow-step:first-child{padding-top:4px;}
+  .flow-step:last-child{padding-bottom:4px;}
+
+  .flow-node{
+    flex:none; width:46px; height:46px; border-radius:50%;
+    background:var(--void); border:1.5px solid var(--royal-dim);
+    display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:1;
+    transition:border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+  }
+  .flow-icon{width:19px; height:19px; stroke:var(--mist); fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.35s ease;}
+  .flow-step.active .flow-node{animation:nodeShockHit 0.4s ease-out 1 forwards;}
+  @keyframes nodeShockHit{
+    0%{border-color:var(--royal-dim); background:var(--void); box-shadow:none;}
+    15%{border-color:#fff; background:rgba(51,85,255,0.35); box-shadow:0 0 20px var(--royal-bright), 0 0 44px rgba(51,85,255,.9);}
+    30%{border-color:var(--royal-dim); background:rgba(51,85,255,0.08); box-shadow:0 0 6px rgba(51,85,255,.3);}
+    45%{border-color:#fff; background:rgba(51,85,255,0.28); box-shadow:0 0 16px var(--royal-bright), 0 0 36px rgba(51,85,255,.75);}
+    100%{border-color:#fff; background:rgba(51,85,255,0.14); box-shadow:0 0 8px var(--royal-bright), 0 0 24px rgba(51,85,255,.65);}
+  }
+  .flow-step:hover .flow-node{
+    border-color:#fff; background:rgba(51,85,255,0.14);
+    box-shadow:0 0 8px var(--royal-bright), 0 0 24px rgba(51,85,255,.65);
+  }
+  .flow-step.active .flow-icon, .flow-step:hover .flow-icon{stroke:#fff;}
+
+  .flow-copy{padding-top:2px;}
+  .flow-num{
+    font-family:var(--font-display); font-size:12.5px; font-weight:600; letter-spacing:0.08em;
+    color:var(--royal-bright); margin-bottom:6px; transition:color 0.35s ease, text-shadow 0.35s ease;
+  }
+  .flow-copy h3{
+    font-family:var(--font-display); font-weight:500; font-size:19px; color:var(--white); margin-bottom:8px;
+    transition:text-shadow 0.35s ease;
+  }
+  .flow-copy p{color:var(--mist); font-size:15px; line-height:1.6; max-width:460px;}
+  .flow-step.active .flow-num, .flow-step:hover .flow-num{color:#fff; text-shadow:0 0 12px rgba(124,147,255,.6);}
+  .flow-step.active h3, .flow-step:hover h3{text-shadow:0 0 16px rgba(124,147,255,.45);}
+
+  @media (max-width:600px){
+    .flow-step{gap:18px; padding:20px 0;}
+    .flow-node{width:38px; height:38px;}
+    .flow-icon{width:16px; height:16px;}
+    .flow-list::before{left:18px;}
+    .flow-list::after{left:18px;}
   }
 
-  .orbit-spoke{
-    stroke:var(--royal-dim); stroke-width:1.4;
-    stroke-dasharray:3 4;
-    transition:stroke 0.5s ease, stroke-width 0.5s ease, filter 0.5s ease;
-    animation:electricArc 0.7s linear infinite;
-  }
-  @keyframes electricArc{to{stroke-dashoffset:-14;}}
-  .orbit-spoke.active{stroke:var(--ember); stroke-width:2.2; filter:drop-shadow(0 0 8px rgba(255,51,82,0.8));}
+  /* connector line + traveling spark (used in zigzag/desktop mode) */
+  .flow-connector{display:none;}
+  .flow-spark{display:none;}
 
-  .orbit-node-circle{fill:var(--void); stroke:var(--royal-dim); stroke-width:1.6; transition:stroke 0.5s ease, fill 0.5s ease, filter 0.5s ease;}
-  .orbit-node-icon{stroke:var(--mist); fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.5s ease;}
-  .orbit-node.active .orbit-node-circle{fill:rgba(255,51,82,0.12); stroke:var(--ember); filter:drop-shadow(0 0 12px rgba(255,51,82,0.65));}
-  .orbit-node.active .orbit-node-icon{stroke:#fff;}
+  /* ---------- process flow: zigzag diamonds (wide screens) ---------- */
+  @media (min-width:881px){
+    .flow-list{
+      display:flex; align-items:center; justify-content:center;
+      max-width:none; margin-top:26px; padding:70px 0 104px;
+    }
+    .flow-list::before, .flow-list::after{content:none;}
 
-  .orbit-node{cursor:pointer;}
-  .orbit-node:hover .orbit-node-circle{stroke:var(--royal-bright); filter:drop-shadow(0 0 10px rgba(124,147,255,0.5));}
-  .orbit-node:hover .orbit-node-icon{stroke:var(--royal-bright);}
-  .orbit-node.active:hover .orbit-node-circle{stroke:var(--ember); filter:drop-shadow(0 0 12px rgba(255,51,82,0.65));}
-  .orbit-node.active:hover .orbit-node-icon{stroke:#fff;}
+    .flow-connector{
+      display:block; position:absolute; inset:0; width:100%; height:100%;
+      overflow:visible; pointer-events:none; z-index:0;
+    }
+    #flow-connector-path{fill:none; stroke:rgba(124,147,255,.3); stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+    .flow-spark{
+      display:block; position:absolute; top:0; left:0; width:14px; height:22px;
+      background:linear-gradient(#fff, var(--royal-bright));
+      clip-path:polygon(35% 0%, 100% 0%, 45% 50%, 100% 50%, 20% 100%, 40% 50%, 0% 50%);
+      filter:drop-shadow(0 0 6px var(--royal-bright)) drop-shadow(0 0 16px rgba(51,85,255,.9));
+      transform:translate(-50%,-50%); z-index:2; opacity:0; pointer-events:none;
+    }
+    .flow-spark.on{opacity:1; animation:sparkShock 0.35s ease-in-out infinite;}
+    @keyframes sparkShock{
+      0%,100%{opacity:1; transform:translate(-50%,-50%) scale(1);}
+      25%{opacity:0.45; transform:translate(-50%,-50%) scale(0.85);}
+      50%{opacity:1; transform:translate(-50%,-50%) scale(1.1);}
+      75%{opacity:0.6; transform:translate(-50%,-50%) scale(0.95);}
+    }
 
-  @media (max-width:480px){
-    .orbit-wrap{max-width:300px;}
+    .flow-step{
+      flex:0 0 auto; width:196px; height:196px; margin:0 -20px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:0; gap:0; z-index:1;
+    }
+    .flow-step:nth-child(odd){transform:translateY(46px);}
+    .flow-step:nth-child(even){transform:translateY(-46px);}
+
+    .flow-step::before{
+      content:''; position:absolute; inset:18px; z-index:-1;
+      background:linear-gradient(145deg, rgba(51,85,255,0.1), rgba(4,5,8,0.92));
+      border:1.5px solid var(--royal-dim); border-radius:26px;
+      transform:rotate(45deg);
+      transition:border-color .4s ease, box-shadow .4s ease, background .4s ease;
+    }
+    .flow-step:hover::before{
+      border-color:#fff;
+      background:linear-gradient(145deg, rgba(51,85,255,0.22), rgba(4,5,8,0.92));
+      box-shadow:0 0 20px rgba(51,85,255,.55), 0 0 60px rgba(51,85,255,.3);
+    }
+    .flow-step.active::before{
+      animation:shockHit 0.4s ease-out 1 forwards;
+    }
+    @keyframes shockHit{
+      0%{border-color:var(--royal-dim); background:linear-gradient(145deg, rgba(51,85,255,0.1), rgba(4,5,8,0.92)); box-shadow:none;}
+      15%{border-color:#fff; background:linear-gradient(145deg, rgba(51,85,255,0.5), rgba(4,5,8,0.92)); box-shadow:0 0 46px rgba(124,147,255,.95), 0 0 100px rgba(51,85,255,.7);}
+      30%{border-color:var(--royal-dim); background:linear-gradient(145deg, rgba(51,85,255,0.14), rgba(4,5,8,0.92)); box-shadow:0 0 14px rgba(51,85,255,.35);}
+      45%{border-color:#fff; background:linear-gradient(145deg, rgba(51,85,255,0.4), rgba(4,5,8,0.92)); box-shadow:0 0 40px rgba(124,147,255,.85), 0 0 90px rgba(51,85,255,.6);}
+      100%{border-color:#fff; background:linear-gradient(145deg, rgba(51,85,255,0.22), rgba(4,5,8,0.92)); box-shadow:0 0 20px rgba(51,85,255,.55), 0 0 60px rgba(51,85,255,.3);}
+    }
+
+    .flow-node{width:auto; height:auto; background:none; border:none; margin-bottom:10px;}
+    .flow-icon{width:26px; height:26px; stroke:var(--royal-bright);}
+    .flow-step.active .flow-node, .flow-step:hover .flow-node{background:none; border:none; box-shadow:none; animation:none;}
+    .flow-step.active .flow-icon, .flow-step:hover .flow-icon{stroke:#fff;}
+
+    .flow-num{display:none;}
+    .flow-copy{padding:0; max-width:136px;}
+    .flow-copy h3{font-size:14px; margin-bottom:6px; line-height:1.25;}
+    .flow-copy p{font-size:11px; line-height:1.4; max-width:none;}
   }
 
-  /* ---------- hover reveal panel ---------- */
-  .process-reveal{position:relative; min-height:260px; display:flex; align-items:center;}
-  .reveal-empty{
-    color:#a6afca;
-    font-size:16px;
-    letter-spacing:0.01em;
-    transition:opacity 0.4s ease;
-    animation:hintGlow 3s ease-in-out infinite;
-  }
-  @keyframes hintGlow{
-    0%,100%{text-shadow:0 0 0 rgba(124,147,255,0);}
-    50%{text-shadow:0 0 16px rgba(124,147,255,0.5);}
-  }
-  .reveal-empty.hide{opacity:0;}
-
-  .reveal-content{
-    position:absolute; left:0; right:0;
-    opacity:0; filter:blur(6px);
-    transform:translateY(10px) scale(0.98);
-    padding:30px 34px;
-    border-radius:18px;
-    border:1px solid transparent;
-    transition:opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
-  }
-  .reveal-content.show{
-    opacity:1; filter:blur(0);
-    transform:translateY(0) scale(1);
-    border-color:rgba(124,147,255,0.4);
-    box-shadow:0 0 36px rgba(51,85,255,0.32), inset 0 0 26px rgba(51,85,255,0.07);
-    background:rgba(51,85,255,0.045);
-  }
-  .reveal-num{font-family:var(--font-display); font-size:40px; font-weight:500; color:var(--royal-bright); line-height:1; margin-bottom:14px; text-shadow:0 0 18px rgba(124,147,255,0.55);}
-  .reveal-content h3{font-family:var(--font-display); font-weight:500; font-size:26px; margin-bottom:12px; color:var(--white);}
-  .reveal-content p{color:#c9cfe3; font-size:16px; line-height:1.6; max-width:460px;}
-
-  @media (max-width:860px){
-    .process-body{grid-template-columns:1fr; gap:20px;}
-    .process-reveal{min-height:220px;}
-  }
 
   /* ---------- services / how ---------- */
 
@@ -730,72 +790,73 @@
       <h2>Six steps, wired together correctly.</h2>
       <p>It looks like magic. It's really just information, moving where it should.</p>
     </div>
-    <div class="process-body">
-      <div class="process-sticky">
-        <div class="orbit-wrap">
-          <svg class="orbit-svg" viewBox="0 0 400 400">
-            <g class="orbit-spokes">
-              <line class="orbit-spoke" data-index="0" x1="200" y1="200" x2="200" y2="50"/>
-              <line class="orbit-spoke" data-index="1" x1="200" y1="200" x2="330" y2="125"/>
-              <line class="orbit-spoke" data-index="2" x1="200" y1="200" x2="330" y2="275"/>
-              <line class="orbit-spoke" data-index="3" x1="200" y1="200" x2="200" y2="350"/>
-              <line class="orbit-spoke" data-index="4" x1="200" y1="200" x2="70" y2="275"/>
-              <line class="orbit-spoke" data-index="5" x1="200" y1="200" x2="70" y2="125"/>
-            </g>
-            <circle class="orbit-ring orbit-ring-outer" cx="200" cy="200" r="190"/>
-            <circle class="orbit-ring orbit-ring-mid" cx="200" cy="200" r="150"/>
-            <circle class="orbit-ring orbit-ring-inner" cx="200" cy="200" r="110"/>
+    <div class="flow-list" id="flow-list">
+      <svg class="flow-connector" id="flow-connector"><path id="flow-connector-path"/></svg>
+      <div class="flow-spark" id="flow-spark"></div>
 
-            <circle class="orbit-hub-circle" cx="200" cy="200" r="55"/>
-            <g class="orbit-hub-icon" transform="translate(177,177) scale(1.9167)">
-              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-            </g>
-
-            <g class="orbit-node" data-index="0">
-              <circle class="orbit-node-circle" cx="200" cy="50" r="30"/>
-              <g class="orbit-node-icon" transform="translate(189,39) scale(0.9167)">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8"/>
-              </g>
-            </g>
-            <g class="orbit-node" data-index="1">
-              <circle class="orbit-node-circle" cx="330" cy="125" r="30"/>
-              <g class="orbit-node-icon" transform="translate(319,114) scale(0.9167)">
-                <path d="M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
-              </g>
-            </g>
-            <g class="orbit-node" data-index="2">
-              <circle class="orbit-node-circle" cx="330" cy="275" r="30"/>
-              <g class="orbit-node-icon" transform="translate(319,264) scale(0.9167)">
-                <path d="M12 8c4.42 0 8-1.79 8-4s-3.58-4-8-4-8 1.79-8 4 3.58 4 8 4z M4 6v6c0 2.21 3.58 4 8 4s8-1.79 8-4V6 M4 12v6c0 2.21 3.58 4 8 4s8-1.79 8-4v-6"/>
-              </g>
-            </g>
-            <g class="orbit-node" data-index="3">
-              <circle class="orbit-node-circle" cx="200" cy="350" r="30"/>
-              <g class="orbit-node-icon" transform="translate(189,339) scale(0.9167)">
-                <path d="M6 3v12 M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 9a9 9 0 0 1-9 9"/>
-              </g>
-            </g>
-            <g class="orbit-node" data-index="4">
-              <circle class="orbit-node-circle" cx="70" cy="275" r="30"/>
-              <g class="orbit-node-icon" transform="translate(59,264) scale(0.9167)">
-                <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
-              </g>
-            </g>
-            <g class="orbit-node" data-index="5">
-              <circle class="orbit-node-circle" cx="70" cy="125" r="30"/>
-              <g class="orbit-node-icon" transform="translate(59,114) scale(0.9167)">
-                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 0 1-3.46 0"/>
-              </g>
-            </g>
-          </svg>
+      <div class="flow-step" data-index="0">
+        <div class="flow-node">
+          <svg class="flow-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8"/></svg>
+        </div>
+        <div class="flow-copy">
+          <div class="flow-num">01</div>
+          <h3>Customer fills out form</h3>
+          <p>A visitor starts filling in your embedded form.</p>
         </div>
       </div>
-      <div class="process-reveal" id="process-reveal">
-        <div class="reveal-empty">Hover a node to explore each step.</div>
-        <div class="reveal-content">
-          <div class="reveal-num" id="reveal-num">01</div>
-          <h3 id="reveal-title">Customer fills out form</h3>
-          <p id="reveal-desc">A visitor lands on a form embedded in your funnel or website and starts filling it in.</p>
+
+      <div class="flow-step" data-index="1">
+        <div class="flow-node">
+          <svg class="flow-icon" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        </div>
+        <div class="flow-copy">
+          <div class="flow-num">02</div>
+          <h3>Form captures information</h3>
+          <p>Every field submitted is captured cleanly.</p>
+        </div>
+      </div>
+
+      <div class="flow-step" data-index="2">
+        <div class="flow-node">
+          <svg class="flow-icon" viewBox="0 0 24 24"><path d="M12 8c4.42 0 8-1.79 8-4s-3.58-4-8-4-8 1.79-8 4 3.58 4 8 4z M4 6v6c0 2.21 3.58 4 8 4s8-1.79 8-4V6 M4 12v6c0 2.21 3.58 4 8 4s8-1.79 8-4v-6"/></svg>
+        </div>
+        <div class="flow-copy">
+          <div class="flow-num">03</div>
+          <h3>Custom field stores data</h3>
+          <p>Data lands in the right contact field.</p>
+        </div>
+      </div>
+
+      <div class="flow-step" data-index="3">
+        <div class="flow-node">
+          <svg class="flow-icon" viewBox="0 0 24 24"><path d="M6 3v12 M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 9a9 9 0 0 1-9 9"/></svg>
+        </div>
+        <div class="flow-copy">
+          <div class="flow-num">04</div>
+          <h3>Contact enters workflow</h3>
+          <p>The contact drops into the matching workflow.</p>
+        </div>
+      </div>
+
+      <div class="flow-step" data-index="4">
+        <div class="flow-node">
+          <svg class="flow-icon" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div class="flow-copy">
+          <div class="flow-num">05</div>
+          <h3>Workflow triggers</h3>
+          <p>Tagging, routing and timing run on their own.</p>
+        </div>
+      </div>
+
+      <div class="flow-step" data-index="5">
+        <div class="flow-node">
+          <svg class="flow-icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div class="flow-copy">
+          <div class="flow-num">06</div>
+          <h3>Notification is sent</h3>
+          <p>The right person is notified instantly.</p>
         </div>
       </div>
     </div>
@@ -1145,53 +1206,101 @@
   }, {threshold:0.15});
   revealEls.forEach(function(el){ io.observe(el); });
 
-  // ================= process orbit hover reveal =================
-  var stepToNode = [0,0,1,2,3,4];
-  var stepData = [
-    {title:'Customer fills out form', desc:'A visitor lands on a form embedded in your funnel or website and starts filling it in.'},
-    {title:'Form captures information', desc:'Every field submitted is captured cleanly, no matter how the visitor got there.'},
-    {title:'Custom field stores data', desc:'The information lands in the right custom field on the contact record, ready to use.'},
-    {title:'Contact enters workflow', desc:'The contact is dropped into the workflow built for exactly this situation.'},
-    {title:'Workflow triggers', desc:'The workflow runs its steps: tagging, routing, timing, whatever the business needs.'},
-    {title:'Notification is sent', desc:'The right person gets notified automatically. No one has to check a spreadsheet.'}
-  ];
+  // ================= process flow: live pipeline + zigzag spark =================
+  (function(){
+    var flowList = document.getElementById('flow-list');
+    if(!flowList) return;
+    var steps = Array.prototype.slice.call(flowList.querySelectorAll('.flow-step'));
+    if(!steps.length) return;
+    var svg = document.getElementById('flow-connector');
+    var path = document.getElementById('flow-connector-path');
+    var spark = document.getElementById('flow-spark');
+    var stepToNode = [0,0,1,2,3,4];
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var zigzagMQ = window.matchMedia('(min-width:881px)');
+    var SEG_MS = 900;
+    var timer = null, raf = null, segStart = null;
+    var step = 0;
+    var pts = [];
 
-  var orbitNodes = document.querySelectorAll('.orbit-node');
-  var orbitSpokes = document.querySelectorAll('.orbit-spoke');
-  var revealContent = document.querySelector('.reveal-content');
-  var revealEmpty = document.querySelector('.reveal-empty');
-  var revealNum = document.getElementById('reveal-num');
-  var revealTitle = document.getElementById('reveal-title');
-  var revealDesc = document.getElementById('reveal-desc');
+    function measure(){
+      if(!zigzagMQ.matches) return;
+      var listRect = flowList.getBoundingClientRect();
+      pts = steps.map(function(s){
+        var r = s.getBoundingClientRect();
+        return {x: r.left + r.width/2 - listRect.left, y: r.top + r.height/2 - listRect.top};
+      });
+      if(svg && path){
+        svg.setAttribute('viewBox', '0 0 ' + flowList.clientWidth + ' ' + flowList.clientHeight);
+        path.setAttribute('d', 'M ' + pts.map(function(p){ return p.x + ',' + p.y; }).join(' L '));
+      }
+    }
+    measure();
+    window.addEventListener('resize', measure);
 
-  function setOrbitActive(index){
-    orbitNodes.forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-index') === String(index)); });
-    orbitSpokes.forEach(function(s){ s.classList.toggle('active', s.getAttribute('data-index') === String(index)); });
-  }
+    function setActive(idx){
+      steps.forEach(function(s, i){ s.classList.toggle('active', i === idx); });
+      if(window.__setActiveNode) window.__setActiveNode(stepToNode[idx]);
+    }
 
-  function showStep(idx){
-    setOrbitActive(idx);
-    window.__setActiveNode(stepToNode[idx]);
-    var d = stepData[idx];
-    revealNum.textContent = String(idx+1).padStart(2,'0');
-    revealTitle.textContent = d.title;
-    revealDesc.textContent = d.desc;
-    if(revealContent) revealContent.classList.add('show');
-    if(revealEmpty) revealEmpty.classList.add('hide');
-  }
-  function hideStep(){
-    setOrbitActive(-1);
-    window.__setActiveNode(-1);
-    if(revealContent) revealContent.classList.remove('show');
-    if(revealEmpty) revealEmpty.classList.remove('hide');
-  }
+    function placeSpark(idx){
+      if(!spark || !pts[idx]) return;
+      spark.style.left = pts[idx].x + 'px';
+      spark.style.top = pts[idx].y + 'px';
+    }
 
-  orbitNodes.forEach(function(node){
-    var idx = parseInt(node.getAttribute('data-index'), 10);
-    node.addEventListener('mouseenter', function(){ showStep(idx); });
-    node.addEventListener('mouseleave', hideStep);
-    node.addEventListener('click', function(){ showStep(idx); });
-  });
+    function animateSpark(ts, segIdx){
+      if(!zigzagMQ.matches || !pts.length){ if(spark) spark.classList.remove('on'); return; }
+      if(!segStart) segStart = ts;
+      var t = Math.min((ts - segStart) / SEG_MS, 1);
+      var a = pts[segIdx], b = pts[(segIdx + 1) % pts.length];
+      if(a && b && spark){
+        spark.style.left = (a.x + (b.x - a.x) * t) + 'px';
+        spark.style.top = (a.y + (b.y - a.y) * t) + 'px';
+        spark.classList.add('on');
+      }
+      if(t < 1) raf = requestAnimationFrame(function(ts2){ animateSpark(ts2, segIdx); });
+    }
+
+    function tick(){
+      var current = step;
+      setActive(current);
+      step = (step + 1) % steps.length;
+      if(zigzagMQ.matches){
+        segStart = null;
+        if(raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function(ts){ animateSpark(ts, current); });
+      }
+    }
+
+    function start(){
+      measure();
+      if(reduceMotion){ setActive(0); placeSpark(0); return; }
+      flowList.classList.add('flow-running');
+      tick();
+      timer = setInterval(tick, SEG_MS);
+    }
+
+    var flowIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ start(); flowIo.disconnect(); }
+      });
+    }, {threshold:0.2});
+    flowIo.observe(flowList);
+
+    steps.forEach(function(s, i){
+      s.addEventListener('mouseenter', function(){
+        if(timer){ clearInterval(timer); timer = null; }
+        if(raf){ cancelAnimationFrame(raf); raf = null; }
+        setActive(i);
+        placeSpark(i);
+        if(spark) spark.classList.add('on');
+      });
+      s.addEventListener('mouseleave', function(){
+        if(!timer && !reduceMotion){ step = i; timer = setInterval(tick, SEG_MS); tick(); }
+      });
+    });
+  })();
 
   // ================= about nodes sequence =================
   var aboutNodes = document.querySelectorAll('#about-nodes .about-node');
